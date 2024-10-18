@@ -1,39 +1,67 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerScript : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
-    bool move = false;
+    Vector3 newPosition;
+    bool isMoving = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        newPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        checkMove();   
+        checkMove();
+
+    }
+    private void FixedUpdate()
+    {
+
+        
     }
 
     void checkMove()
     {
-        Vector3 newPosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, transform.position.y, transform.position.z);
-        if (Input.GetMouseButtonDown(0))
+        if (!isMoving)
         {
-            move = true;
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Input.mousePosition;
+                Vector3 raycastPos = new Vector3(mousePos.x, mousePos.y, -10);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
+                if (hit)
+                {
+
+                    if (hit.collider.CompareTag("EnemyHead") || hit.collider.CompareTag("EnemyBody"))
+                    {
+                        Debug.Log("hit enemy");
+                        GameObject enemyCollider = hit.collider.gameObject;
+                        GameObject enemy = enemyCollider.transform.parent.gameObject;
+                        Destroy(enemy);
+                    }
+                    else if (hit.collider.CompareTag("MoveZone"))
+                    {
+                        Debug.Log("hit");
+                        float xPos = hit.collider.transform.position.x;
+                        newPosition = new Vector2 (xPos, transform.position.y);
+                        isMoving = true;
+                    }
+                }
+            }
         }
-        if (move == true)
+        transform.position = Vector3.MoveTowards(transform.position, newPosition, moveSpeed);
+        if (transform.position == newPosition)
         {
-            transform.position = Vector3.MoveTowards(transform.position, newPosition, moveSpeed);
-        }
-        if (transform.position.x == newPosition.x)
-        {
-            move = false;
+            isMoving = false;
         }
     }
 }

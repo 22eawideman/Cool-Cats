@@ -3,15 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - MoveZone
+  - EnemyHead
+  - EnemyBody
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - background
   - Water
   - UI
-  - 
+  - Enemy
   - 
   - 
   - 
