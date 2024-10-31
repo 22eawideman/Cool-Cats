@@ -7,6 +7,8 @@ TagManager:
   - MoveZone
   - EnemyHead
   - EnemyBody
+  - Pillar
+  - Crate
   layers:
   - Default
   - TransparentFX

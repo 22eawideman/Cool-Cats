@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 7706504911856068271}
   - component: {fileID: 578449967456264741}
   - component: {fileID: 2882577968963875717}
-  - component: {fileID: -5353987297623299468}
+  - component: {fileID: -7943561024990594704}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -95,7 +95,7 @@ Transform:
   m_GameObject: {fileID: 7084500626213519350}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.44, y: -2.955, z: 0}
+  m_LocalPosition: {x: 4.44, y: -2.955, z: -1}
   m_LocalScale: {x: 1, y: 1.175, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -172,7 +172,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9056604, g: 0.07262372, b: 0.07262372, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -182,41 +182,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!70 &-5353987297623299468
-CapsuleCollider2D:
+--- !u!114 &-7943561024990594704
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7084500626213519350}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
-  m_Direction: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e050e06cf363de742b393fa278ff9196, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  points: 100
+  moveSpeed: 0.0185
+  bullet: {fileID: 7233904468359228838, guid: f4c8a2434de572b44be3e87e7cf0674c, type: 3}
 --- !u!1 &9177769123554344980
 GameObject:
   m_ObjectHideFlags: 0
