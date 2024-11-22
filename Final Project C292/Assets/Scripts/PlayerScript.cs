@@ -14,8 +14,9 @@ public class PlayerScript : MonoBehaviour
     bool isMoving = false;
     EnemyScript enemy;
     float timeOfNextTP = 0;
-    //bool isCoveredLeft = false;
-    //bool isCoveredRight = false;
+    public bool isCoveredLeft = false;
+    public bool isCoveredRight = false;
+    GameObject self;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class PlayerScript : MonoBehaviour
     {
         checkMove();
         checkTP();
+        self = GetComponent<GameObject>();
     }
 
     void checkMove()
@@ -42,20 +44,52 @@ public class PlayerScript : MonoBehaviour
                 if (hit)
                 {
 
-                    if (hit.collider.CompareTag("EnemyHead") || hit.collider.CompareTag("EnemyBody"))
+                    if (hit.collider.CompareTag("EnemyHead"))
                     {
-                        Debug.Log("hit enemy");
                         GameObject enemyCollider = hit.collider.gameObject;
                         enemy = enemyCollider.transform.parent.gameObject.GetComponent<EnemyScript>();
-                        enemy.destroyEnemy();
+                        enemy.hit(2);
+                        isCoveredRight = false;
+                        isCoveredLeft = false;
+                    }
+                    else if (hit.collider.CompareTag("EnemyBody"))
+                    {
+                        GameObject enemyCollider = hit.collider.gameObject;
+                        enemy = enemyCollider.transform.parent.gameObject.GetComponent<EnemyScript>();
+                        enemy.hit(1);
+                        isCoveredRight = false;
+                        isCoveredLeft = false;
+                    }
+                    else if (hit.collider.CompareTag("Cover"))
+                    {
+                        float xPos = hit.collider.transform.position.x;
+                        float parentPos = hit.collider.transform.parent.transform.position.x;
+                        EnemyScript enemy = hit.collider.gameObject.GetComponentInParent<EnemyScript>();
+                        if (enemy != null)
+                        {
+                            enemy.setIsCover();
+                        }
+                        newPosition = new Vector3(xPos, transform.position.y, -1);
+                        isMoving = true;
+                        if (xPos > parentPos)
+                        {
+                            isCoveredLeft = true;
+                        }
+                        else
+                        {
+                            isCoveredRight = true;
+                        }
                     }
                     else if (hit.collider.CompareTag("MoveZone"))
                     {
-                        Debug.Log("hit");
                         float xPos = hit.collider.transform.position.x;
                         newPosition = new Vector3 (xPos, transform.position.y, -1);
                         isMoving = true;
+                        isCoveredLeft = false;
+                        isCoveredRight = false;
                     }
+                    
+
                     gameManager.changeTurn();
                 }
             }
@@ -80,16 +114,16 @@ public class PlayerScript : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("EnemyHead") || hit.collider.CompareTag("EnemyBody"))
                     {
-                        Debug.Log("hit enemy");  
                     }
                     else if (hit.collider.CompareTag("MoveZone"))
                     {
-                        Debug.Log("hit");
                         float xPos = hit.collider.transform.position.x;
                         newPosition = new Vector3(xPos, transform.position.y, -1);
                         transform.position = newPosition;
                         timeOfNextTP = Time.realtimeSinceStartup + tpCooldown;
                         gameManager.changeTurn();
+                        isCoveredRight = false;
+                        isCoveredLeft = false;
                     }
                 }
             }
@@ -103,4 +137,11 @@ public class PlayerScript : MonoBehaviour
         }
         gameManager.changeTPCooldown(timeTillNextTP);
     }
+
+    public void killCover()
+    {
+        isCoveredLeft = false;
+        isCoveredRight = false;
+    }
+
 }

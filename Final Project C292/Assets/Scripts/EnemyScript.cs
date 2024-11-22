@@ -12,9 +12,11 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject bullet;
 
+    bool isCover = false;
     int side;
     Vector3 newPosition;
     bool isMoving = false;
+    int health = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,18 +45,32 @@ public class EnemyScript : MonoBehaviour
 
     public void checkShoot()
     {
-        if (!isMoving && gameManager.turn == 1)
+        if (!isMoving && gameManager.turn == 1 && !isCover)
         {
             gameManager.changeTurn();
             GameObject bulletInstance = Instantiate(bullet, transform.position, Quaternion.Euler(0,0,90f));
-            bullet.GetComponent<BulletScript>().side = side;
+        }
+        if (isCover && gameManager.turn == 1)
+        {
+            gameManager.changeTurn();
+        }
+    }
+
+    public void hit(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            destroyEnemy();
         }
     }
 
     public void destroyEnemy()
     {
+        
         Destroy(gameObject);
         gameManager.increaseScore(points);
+        gameManager.enemiesKilled++;
     }
 
     public void moveEnemy(Vector3 position)
@@ -65,5 +81,37 @@ public class EnemyScript : MonoBehaviour
     public void setSide(int side)
     {
         this.side = side;
+    }
+
+    public void setIsCover()
+    {
+        if (isCover)
+        {
+            isCover = false;
+        }
+        else
+        {
+            isCover = true; 
+        }
+    }
+
+    public bool enemyDestroyEnemy()
+    {
+        if (isCover)
+        {
+            PlayerScript player = GameObject.Find("Player").GetComponent<PlayerScript>();
+            player.killCover();
+            Destroy(gameObject);
+            gameManager.increaseScore(points);
+            gameManager.enemiesKilled++;
+            return true;
+
+        }
+        return false;
+    }
+  
+    public void setHealth(int health)
+    {
+        this.health = health;
     }
 }

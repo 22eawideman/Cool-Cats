@@ -7,13 +7,10 @@ public class BulletScript : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
     GameManager gameManager;
-    public int side;
-    GameObject self;
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        self = GetComponent<GameObject>();
     }
 
     // Update is called once per frame
@@ -24,25 +21,85 @@ public class BulletScript : MonoBehaviour
 
     private void Move()
     {
-        if (side == 0)
+        GameObject player = GameObject.Find("Player");
+        Vector2 newPosition;
+        if (player != null)
         {
-            transform.position += new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
+            newPosition = new Vector2(player.transform.position.x, transform.position.y);
         }
-        if (side == 1) 
+        else
         {
-            transform.position -= new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
+            newPosition = transform.position;
         }
+        Vector2 curPosition = new Vector2(transform.position.x, transform.position.y);
+        
+        gameObject.transform.position = Vector2.MoveTowards(curPosition, newPosition, moveSpeed * Time.deltaTime);
 
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("hit player");
         if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
-            Destroy(self);
-            gameManager.GameOver();   
+            bool canHit = true;
+            GameObject playerInstance = collision.gameObject;
+            if (checkCovered(playerInstance) == 2)
+            {
+                if (transform.position.x < playerInstance.transform.position.x)
+                {
+                    canHit = false;
+                }
+            }
+            else if (checkCovered(playerInstance) == 1)
+            {
+                if (transform.position.x > playerInstance.transform.position.x)
+                {
+                    canHit = false;
+                }
+            }
+            else if (checkCovered(playerInstance) == 3)
+            {
+                canHit = false;
+            }
+            if (canHit)
+            {
+                Destroy(gameObject);
+                Destroy(collision.gameObject);
+                gameManager.GameOver();
+            }
+        }
+        if (!collision.gameObject.CompareTag("EnemyHead") && !collision.gameObject.CompareTag("EnemyBody") && !collision.gameObject.CompareTag("Cover"))
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            bool kill = collision.gameObject.GetComponentInParent<EnemyScript>().enemyDestroyEnemy();
+            if (kill)
+            {
+                Destroy(gameObject);
+            } 
+        }
+    }
+
+    private int checkCovered(GameObject player)
+    {
+        PlayerScript playerScript = player.GetComponent<PlayerScript>();
+        if (playerScript.isCoveredLeft && playerScript.isCoveredRight)
+        {
+            return 3;
+        }
+        if (playerScript.isCoveredLeft)
+        {
+            return 2;
+        }
+        else if (playerScript.isCoveredRight)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
         }
     }
 }
